@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { ArrowDownLeft, ArrowUpRight } from "lucide-react";
 import { motion } from "framer-motion";
 

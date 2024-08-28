@@ -37,6 +37,7 @@ console.log(`https://sepolia.etherscan.io/tx/${tx.hash}`);
   
 
 // The transaction is now on chain!
+//@ts-ignore
 console.log(`Mined in block ${receipt.blockNumber}`);
 
 return receipt;

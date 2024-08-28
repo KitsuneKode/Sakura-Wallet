@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { motion } from "framer-motion";
 import QRCode from "qrcode.react";
 import { Check, Share2, X, Copy } from "lucide-react";

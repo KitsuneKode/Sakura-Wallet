@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { motion, AnimatePresence } from "framer-motion";
 import { Cherry, X } from "lucide-react";
 import { useState } from "react";

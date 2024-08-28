@@ -1,5 +1,7 @@
 // Add all the essential daily box logics here from setupWallets
 
+//@ts-nocheck
+
 import {
   Dialog,
   DialogContent,

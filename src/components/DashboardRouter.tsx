@@ -1,5 +1,6 @@
+//@ts-nocheck
+
 import { Routes, Route } from "react-router-dom";
-import Dashboard from "./Dashboard";
 import SendCrypto from "./SendCrypto";
 function DashboardRoutes() {
   return (

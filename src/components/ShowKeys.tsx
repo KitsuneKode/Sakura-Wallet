@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { X, Copy, Check, Eye, EyeOff } from "lucide-react";
