@@ -28,9 +28,10 @@ import {
 } from "./DashboardComponents";
 
 import { useLocation, useNavigate } from "react-router-dom";
-import { solBalance } from "./scripts/balance.ts";
+import { solBalance, ethBalance } from "./scripts/balance.ts";
 import { airdrop } from "./scripts/airdropSol.ts";
-import { Toast } from "@radix-ui/react-toast";
+// import { Toast } from "@radix-ui/react-toast";
+// import toast, { Toaster } from "react-hot-toast";
 
 export default function Component() {
   const location = useLocation();
@@ -38,9 +39,10 @@ export default function Component() {
 
   const [darkMode, setDarkMode] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [secretPhrase, setSecretPhrase] = useState("");
   const [accountSelectorOpen, setAccountSelectorOpen] = useState(false);
   const [selectedAccount, setSelectedAccount] = useState("Main Account");
-  const [selectedCurrency, setSelectedCurrency] = useState("SOL");
+  const [selectedCurrency, setSelectedCurrency] = useState("");
   const [selectedNetwork, setSelectedNetwork] = useState("mainnet");
   const [showWelcome, setShowWelcome] = useState(true);
   const [copiedPublicKey, setCopiedPublicKey] = useState(false);
@@ -51,11 +53,17 @@ export default function Component() {
     useState(false);
   const [showKeysModal, setShowKeysModal] = useState(false);
   const [copiedPrivateKey, setCopiedPrivateKey] = useState(false);
-  const [publicKey, setPublicKey] = useState(null);
-  const [privateKey, setPrivateKey] = useState(null);
-  const [airdropAmount, setAirdropAmount] = useState("1");
+  const [publicKey, setPublicKey] = useState("");
+  const [privateKey, setPrivateKey] = useState("");
+  const [airdropAmount, setAirdropAmount] = useState(1);
 
+  const [nickname, setNickname] = useState("");
+
+  //state vars for fetching balance
   const [sol, setSol] = useState<number | null>(null);
+  const [eth, setEth] = useState<number | null>(null);
+  const [multipleWallets, setMultipleWallets] = useState(false);
+  const [multiWalletKeys, setMultiWalletKeys] = useState({});
 
   const toggleDarkMode = () => setDarkMode(!darkMode);
   const toggleSettings = () => setSettingsOpen(!settingsOpen);
@@ -63,44 +71,129 @@ export default function Component() {
     setAccountSelectorOpen(!accountSelectorOpen);
 
   useEffect(() => {
-    if (!location.state?.publicKey || !location.state?.privateKey) {
+    // If user directly tries to access the dashboard without giving accounts and stuff
+    if (!location.state?.currentWalletDetails) {
       alert(
-        "Can't access the dashboard without account selection! Redirecting to Homepage"
+        "Can't access the dashboard without account selection/creation! Redirecting to Homepage"
       );
       navigate("/"); // Redirect to the homepage
       return; // Return early
-
-      // setTimeout(() => {
-      // navigate("/"); // Redirect to the homepage
-      // }, 200);
     }
 
-    // Multiple Wallet Logic
-    // if(){}
+    type SingleWalletDetails = {
+      count: number;
+      type: string;
+      nickname: string;
+      privateKey: string;
+      publicKey: string;
+      secretPhrase: string;
+    };
 
-    const { publicKey, privateKey } = location.state as {
+    type MultipleWalletDetails = {
+      solana?: SingleWalletDetails;
+      ethereum?: SingleWalletDetails;
+    };
+    type LocationState = {
+      currentWalletDetails?: SingleWalletDetails | MultipleWalletDetails;
+    };
+
+    const { currentWalletDetails } = location.state as LocationState;
+
+    type WalletDetails = {
+      type: string;
       publicKey: string;
       privateKey: string;
+      secretPhrase: string;
+      nickname: string;
     };
-    setPublicKey(publicKey);
-    setPrivateKey(privateKey);
 
-    // Define the async function inside the useEffect
+    let walletDetails: WalletDetails | undefined;
+    let multipleWalletDetails: MultipleWalletDetails | undefined;
+
+    if (currentWalletDetails) {
+      if ("type" in currentWalletDetails) {
+        // Single wallet case
+        walletDetails = currentWalletDetails as WalletDetails;
+      } else if (currentWalletDetails.solana && currentWalletDetails.ethereum) {
+        // Multiple wallets case - handle as needed
+        walletDetails = currentWalletDetails.ethereum as WalletDetails;
+        setMultipleWallets(true);
+        multipleWalletDetails = currentWalletDetails as MultipleWalletDetails;
+        setMultiWalletKeys({
+          solana: {
+            publicKey: currentWalletDetails.solana.publicKey,
+            privateKey: currentWalletDetails.solana.privateKey,
+          },
+          ethereum: {
+            publicKey: currentWalletDetails.ethereum.publicKey,
+            privateKey: currentWalletDetails.ethereum.privateKey,
+          },
+        });
+      } else {
+        alert("no wallet details found");
+      }
+    }
+
+    // All wallet set the public key and private key
+    if (walletDetails) {
+      const { type, publicKey, privateKey, secretPhrase, nickname } =
+        walletDetails;
+      setSelectedCurrency(type);
+      setPublicKey(publicKey);
+      setPrivateKey(privateKey);
+      setSecretPhrase(secretPhrase);
+      const name = nickname ? nickname.split(" ")[0] : "User";
+      setNickname(name);
+    }
+
+    // Define the fetch function for fetching balances
     const fetchBalance = async () => {
       try {
-        const fetchedSolBalance = await solBalance(publicKey);
-        setSol(fetchedSolBalance);
+        if (multipleWallets) {
+          // Fetch balance for multiple wallets
+          const { solana, ethereum } = multipleWalletDetails as {
+            solana: WalletDetails;
+            ethereum: WalletDetails;
+          };
+
+          const solanaPublicKey = solana.publicKey;
+          const ethereumPublicKey = ethereum.publicKey;
+
+          const fetchedSolBalance = await solBalance(solanaPublicKey);
+          setSol(fetchedSolBalance);
+          const fetchedEthBalance = await ethBalance(ethereumPublicKey);
+          setEth(fetchedEthBalance);
+        } else {
+          if (selectedCurrency === "SOL") {
+            const fetchedSolBalance = await solBalance(publicKey);
+            setSol(fetchedSolBalance);
+          } else if (selectedCurrency === "ETH") {
+            const fetchedEthBalance = await ethBalance(publicKey);
+            setEth(fetchedEthBalance);
+          }
+        }
       } catch (error) {
         console.error("Error fetching balance:", error);
       }
     };
+
+    // Initial fetch of balances
     fetchBalance();
 
-    const intervalId = setInterval(fetchBalance, 3000); // Fetch data every 3 seconds
+    // Periodic fetch of balances every 2 seconds
+    const intervalId = setInterval(fetchBalance, 1000);
 
+    // Cleanup function to clear the interval when the component unmounts or dependencies change
     return () => clearInterval(intervalId);
-  }, [publicKey, location.state, navigate]);
+  }, [location.state, multipleWallets, navigate]);
 
+  //
+  //
+  //
+
+  //
+
+  //Fetches the Dark mode state from earlier and also shows the welcome notification
   useEffect(() => {
     const isDarkMode = localStorage.getItem("darkMode") === "true";
     setDarkMode(isDarkMode);
@@ -108,6 +201,7 @@ export default function Component() {
     return () => clearTimeout(timer);
   }, []);
 
+  //darkMode Changer
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
     localStorage.setItem("darkMode", darkMode.toString());
@@ -116,7 +210,13 @@ export default function Component() {
   const accounts = ["Main Account", "Savings Account", "Trading Account"];
 
   const handleAirdropRequest = async () => {
-    await airdrop(publicKey, airdropAmount);
+    try {
+      const response = await airdrop(publicKey, airdropAmount);
+      console.log(response);
+    } catch (e) {
+      alert(e.message);
+      console.error(e.response.data.error.message);
+    }
   };
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -158,9 +258,10 @@ export default function Component() {
   };
 
   const alertMessage = (message?: string) => {
-    alert(
-      `${!message} ? "This feature is not available yet. Please wait for the next update" : ${message}`
-    );
+    const alertMessage = !message
+      ? "This feature is not available yet. Please wait for the next update"
+      : message;
+    alert(alertMessage);
   };
 
   const shareAddress = () => {
@@ -184,7 +285,7 @@ export default function Component() {
   return (
     <div className={`min-h-screen ${darkMode ? "dark" : ""}`}>
       <div className="bg-gradient-to-b from-red-50 to-white dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-white transition-colors duration-300">
-        <header className="bg-white dark:bg-gray-900 shadow-md sticky top-0 z-10">
+        <header className="bg-white dark:bg-gray-800 shadow-md sticky top-0 z-10">
           <div className="container mx-auto px-4 py-4 flex justify-between items-center">
             <div className="flex items-center space-x-2">
               <Cherry className="h-8 w-8 text-red-500" />
@@ -320,7 +421,7 @@ export default function Component() {
               </select>
             </div>
           </div>
-
+          {/* Airdrop */}
           {selectedNetwork === "devnet" && (
             <div className="mb-8 flex items-center space-x-4">
               <span className="text-sm font-medium">Airdrop</span>
@@ -361,7 +462,7 @@ export default function Component() {
               icon={<Settings className="h-6 w-6" />}
             />
           </div>
-
+          {/*  Holding balance section */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
               <h2 className="text-2xl font-semibold mb-4">
@@ -389,17 +490,29 @@ export default function Component() {
                       name="Ethereum"
                       type="ETH"
                       iconPath="/LogoWallets/ethereum.png"
-                      balance="0.52"
+                      balance={eth ? eth : 0}
                       value="¥1,000,000"
-                      onClick={() => setSelectedCurrency("ETH")}
+                      onClick={() => {
+                        setSelectedCurrency("ETH");
+                        if (multipleWallets) {
+                          setPrivateKey(multiWalletKeys.ethereum.privateKey);
+                          setPublicKey(multiWalletKeys.ethereum.publicKey);
+                        }
+                      }}
                     />
                     <CryptoRow
                       name="Solana"
                       type="SOL"
                       iconPath="/LogoWallets/Solana_logo.png"
-                      balance={sol}
+                      balance={sol ? sol : 0}
                       value="¥500,000"
-                      onClick={() => setSelectedCurrency("SOL")}
+                      onClick={() => {
+                        setSelectedCurrency("SOL");
+                        if (multipleWallets) {
+                          setPrivateKey(multiWalletKeys.solana.privateKey);
+                          setPublicKey(multiWalletKeys.solana.publicKey);
+                        }
+                      }}
                     />
                     <CryptoRow
                       name="Ripple"
@@ -438,6 +551,7 @@ export default function Component() {
             </div>
           </div>
 
+          {/* When Currency is selected this shows the details of the Current chain  */}
           {selectedCurrency && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -449,13 +563,22 @@ export default function Component() {
                 {selectedCurrency} ウォレット残高 (Wallet Balance)
               </h2>
               <p className="text-lg font-medium">
-                {sol} {selectedCurrency}
+                {selectedCurrency === "ETH" ? eth : sol} {selectedCurrency}
               </p>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                ¥{sol ? sol * 500000 : 0}
+                ¥
+                {selectedCurrency === "ETH"
+                  ? eth
+                    ? eth * 356238.3
+                    : 0
+                  : sol
+                  ? sol * 21041
+                  : 0}
               </p>
             </motion.div>
           )}
+
+          {/* Quick ACtion, Send, Recieve */}
 
           <div className="mt-8">
             <h2 className="text-2xl font-semibold mb-4">
@@ -549,7 +672,7 @@ export default function Component() {
                 <X className=" h-4 w-4" />
               </button>
               <p className="text-lg font-semibold mb-2">
-                ようこそ、Satoshi様 (Welcome, Satoshi)
+                ようこそ、{nickname}様 (Welcome, {nickname})
               </p>
               <p className="text-sm text-gray-600 dark:text-gray-400">
                 桜ウォレットへようこそ。安全な取引を！

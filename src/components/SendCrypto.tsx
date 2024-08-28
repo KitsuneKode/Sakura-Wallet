@@ -3,6 +3,7 @@ import { Cherry, X } from "lucide-react";
 import { useState } from "react";
 import { SendSol } from "./scripts/sendSol.ts";
 import { useToast } from "./ui/use-toast.ts";
+import { sendEth } from "./scripts/sendEth.ts";
 const SendCrypto = ({
   privateKey,
   selectedCurrency,
@@ -21,16 +22,33 @@ const SendCrypto = ({
     e.preventDefault();
     setIsSubmitting(true);
 
-    await setTimeout(() => {
+    setTimeout(() => {
       setIsSubmitting(false);
       setSendModalOpen(false);
     }, 2500);
 
+    setShowCompletedNotification(true);
+
     try {
-      // console.log(privateKey);
-      const signature = await SendSol("DevNet", privateKey, recipient, amount);
-      await setTransactionSignature(signature);
-      console.log(transactionSignature);
+      if (selectedCurrency === "ETH") {
+        const signature = await sendEth(
+          "Sepholia",
+          privateKey,
+          recipient,
+          amount
+        );
+        setTransactionSignature(signature);
+        console.log(transactionSignature);
+      } else if (selectedCurrency === "SOL") {
+        const signature = await SendSol(
+          "DevNet",
+          privateKey,
+          recipient,
+          amount
+        );
+        setTransactionSignature(signature);
+        console.log(transactionSignature);
+      }
       setShowCompletedNotification(true);
       toast({
         variant: "default",
@@ -46,7 +64,7 @@ const SendCrypto = ({
       console.error("Unable to send transaction", e);
     }
 
-    await setTimeout(() => {
+    setTimeout(() => {
       setShowCompletedNotification(false);
     }, 6000);
   };
@@ -178,6 +196,7 @@ const SendCrypto = ({
                   handleSendSubmit(e);
                   toast({
                     title: "Transaction started",
+                    description: "Please wait for the transaction to complete.",
                   });
                 }}
               >

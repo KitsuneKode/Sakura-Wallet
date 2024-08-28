@@ -34,7 +34,7 @@ export function CryptoRow({ name, type, iconPath, balance, value, onClick }) {
             <img src={iconPath} alt="" />
           </div>
           <span>
-            {name} ({type})
+            {type} ({name})
           </span>
         </div>
       </td>

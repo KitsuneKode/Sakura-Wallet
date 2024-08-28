@@ -39,7 +39,7 @@ export default function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/setupWallet/" element={<SetupWallet />}></Route>
         <Route path="/dashboard/" element={<Component />} />
-        <Route path="/admin/feature/" element={<NewComponent />} />
+        {/* <Route path="/admin/feature/" element={<NewComponent />} /> */}
 
         {/* <Route path="/send" element={<ReceiveCrypto />} /> */}
         {/* <Route path="/dashboard/send" element={<SendCrypto Props={props} />} /> */}

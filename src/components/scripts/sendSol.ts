@@ -33,7 +33,7 @@ const connection = new Connection(
   "confirmed"
 );
 
-console.log(from)
+// console.log(from)
 
 const secret = decode(from);
 
@@ -70,4 +70,3 @@ return signature;
 
 
 
-SendSol("DevNet", "1ea155ddf8f2fe386eb6f140df38785a6945426c7769fe94543f4a2d1ae3d4c043a9af7506ba716a1afbd5574181141b5c54754a99fb9986d8bd6141ea9a1a9c", "8BxrGvFp9A7vRgPzfQdHBJAKEdBTRyYZdZ9vZFQWC6TT"  , 0.1);

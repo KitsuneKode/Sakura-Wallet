@@ -10,9 +10,10 @@ export const solBalance = async (publicKey:string) => {
 
   const sol = balance / LAMPORTS_PER_SOL;
   console.log(`The balance of the account at ${address} is ${sol} SOL`);
-  console.log(`✅ Finished!`);
+  console.log(`✅ Finished! Solana`);
   return sol;
 };
+
 
 export const ethBalance = async (address:string) => {
   const provider = new JsonRpcProvider(
@@ -22,8 +23,8 @@ export const ethBalance = async (address:string) => {
   const balance = await provider.getBalance(address, "latest");
 
   const eth = formatEther(balance);
-  console.log(eth);
-  return eth;
+  console.log("u got this much eth", eth);
+  return parseFloat(eth);
 };
 
 // ethBalance();

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import {
   Card,
@@ -45,7 +45,9 @@ export default function SetupWallet() {
   const [walletType, setWalletType] = useState("");
   const [accountNumberSol, setAccountNumberSol] = useState(0);
   const [accountNumberEth, setAccountNumberEth] = useState(0);
-  const [currentWalletDetails, setCurrentWalletDetails] = useState({});
+  const [currentWalletDetails, setCurrentWalletDetails] = useState<
+    Wallet | MultiWallet
+  >({});
   const [secretPhrase, setSecretPhrase] = useState("");
   const [showSecretPhrase, setShowSecretPhrase] = useState(false);
   const [isProceeding, setIsProceeding] = useState(false);
@@ -75,6 +77,11 @@ export default function SetupWallet() {
     secretPhrase: string;
   };
 
+  type MultiWallet = {
+    solana: Wallet;
+    ethereum: Wallet;
+  };
+
   //check if the nickname is empty ? show import  : show add
   const handleWalletClick = (type: string) => {
     if (!nickname) {
@@ -99,6 +106,8 @@ export default function SetupWallet() {
     showNotification("Copied to clipboard!", "success");
   };
 
+  //needs fixing
+
   const handleImportSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsProcessing(true);
@@ -113,36 +122,47 @@ export default function SetupWallet() {
 
   //actual add wallet logic for single wallet
   const addWallet = async (type: string) => {
-    if (type !== "solana" && type !== "ethereum") {
+    if (type !== "SOL" && type !== "ETH") {
       alert("Invalid wallet type");
       return;
     }
-    if (type === "solana") {
-      setAccountNumberSol(accountNumberSol + 1);
-      const Keys = getSolWallet(secretPhrase, accountNumberSol);
+    let newWallet: Wallet;
+
+    if (type === "SOL") {
+      const newAccountNumberSol = accountNumberSol + 1;
+      const Keys = getSolWallet(secretPhrase, newAccountNumberSol);
+      setAccountNumberSol(newAccountNumberSol);
       setPrivateKey(Keys[0]);
       setPublicKey(Keys[1]);
       setAccountCount(accountCount + 1);
+
+      newWallet = {
+        count: accountCount + 1,
+        type: type,
+        nickname: `${nickname} Solana ${newAccountNumberSol}`,
+        publicKey: Keys[1],
+        privateKey: Keys[0],
+        secretPhrase: secretPhrase,
+      };
     }
 
-    if (type === "ethereum") {
-      setAccountNumberEth(accountNumberEth + 1);
-      const Keys = getEthWallet(secretPhrase, accountNumberEth);
-
-      setAccountCount(accountCount + 1);
+    if (type === "ETH") {
+      const newAccountNumberEth = accountNumberEth + 1;
+      const Keys = getEthWallet(secretPhrase, newAccountNumberEth);
+      setAccountNumberEth(newAccountNumberEth);
       setPrivateKey(Keys[0]);
       setPublicKey(Keys[1]);
+      setAccountCount(accountCount + 1);
+
+      newWallet = {
+        count: accountCount + 1,
+        type: type,
+        nickname: `${nickname} Ethereum ${newAccountNumberEth}`,
+        publicKey: Keys[1],
+        privateKey: Keys[0],
+        secretPhrase: secretPhrase,
+      };
     }
-    const newWallet: Wallet = {
-      count: accountCount,
-      type: type,
-      nickname: `${nickname} ${type.charAt(0).toUpperCase() + type.slice(1)} ${
-        type === "solana" ? accountNumberSol : accountNumberEth
-      }`,
-      publicKey: publicKey,
-      privateKey: privateKey,
-      secretPhrase: secretPhrase,
-    };
 
     setCurrentWalletDetails(newWallet);
 
@@ -151,32 +171,33 @@ export default function SetupWallet() {
   };
 
   //actual add wallet logic for both wallet at the same time
-
   const addBothWallet = async () => {
     if (walletType !== "both") {
       alert("Invalid wallet type");
       return;
     }
-    setAccountNumberSol(accountNumberSol + 1);
-    setAccountNumberEth(accountNumberEth + 1);
-    const KeysSol = getSolWallet(secretPhrase, accountNumberSol);
-    const KeysEth = getEthWallet(secretPhrase, accountNumberEth);
+    const newAccountNumberSol = accountNumberSol + 1;
+    const newAccountNumberEth = accountNumberEth + 1;
+    const KeysSol = getSolWallet(secretPhrase, newAccountNumberSol);
+    const KeysEth = getEthWallet(secretPhrase, newAccountNumberEth);
 
+    setAccountNumberSol(newAccountNumberSol);
+    setAccountNumberEth(newAccountNumberEth);
     setAccountCount(accountCount + 1);
+
     const newMWallet1: Wallet = {
-      count: accountCount,
-      type: "solana",
-      nickname: `${nickname} Solana ${accountNumberSol}`,
+      count: accountCount + 1,
+      type: "SOL",
+      nickname: `${nickname} Solana ${newAccountNumberSol}`,
       publicKey: KeysSol[1],
       privateKey: KeysSol[0],
       secretPhrase: secretPhrase,
     };
-    setAccountCount(accountCount + 1);
 
     const newMWallet2: Wallet = {
-      count: accountCount,
-      type: "ethereum",
-      nickname: `${nickname} Ethereum ${accountNumberEth}`,
+      count: accountCount + 2,
+      type: "ETH",
+      nickname: `${nickname} Ethereum ${newAccountNumberEth}`,
       publicKey: KeysEth[1],
       privateKey: KeysEth[0],
       secretPhrase: secretPhrase,
@@ -186,7 +207,7 @@ export default function SetupWallet() {
     setPrivateKey(KeysEth[0]);
     setPublicKey(KeysEth[1]);
 
-    setCurrentWalletDetails({ Solana: newMWallet1, Ethereum: newMWallet2 });
+    setCurrentWalletDetails({ solana: newMWallet1, ethereum: newMWallet2 });
     setWallets([...wallets, newMWallet1, newMWallet2]);
   };
 
@@ -246,8 +267,11 @@ export default function SetupWallet() {
     setIsProceeding(true);
     await setTimeout(() => {
       showNotification("Latest Wallet opening", "success");
+      console.log("currentWalletDetails", currentWalletDetails);
       setTimeout(() => {
-        navigate("/dashboard", { state: { publicKey, privateKey } });
+        navigate("/dashboard", {
+          state: { currentWalletDetails },
+        });
       }, 1500);
     }, 1000);
   };
@@ -271,9 +295,12 @@ export default function SetupWallet() {
           <div className="space-y-2">
             <Label
               htmlFor="nickname"
-              className="text-sm font-medium text-[#4A5568] dark:text-gray-300"
+              className="text-base font-medium text-[#4A5568] dark:text-gray-300"
             >
-              Wallet Name(Required)
+              Name(名前)
+              <span className="text-xs pl-96">
+                (Wallet will have that prefix)
+              </span>
             </Label>
             <Input
               required
@@ -317,7 +344,7 @@ export default function SetupWallet() {
               <Button
                 variant="outline"
                 className="h-24 flex flex-col items-center justify-center bg-white dark:bg-gray-600 dark:text-200 hover:bg-[#FFF5F5] border-[#FF6B6B] transition-all duration-300"
-                onClick={() => handleAddWallet("ethereum")}
+                onClick={() => handleAddWallet("ETH")}
               >
                 <Wallet className="h-8 w-8 mb-2 text-[#FF6B6B]" />
                 Ethereum Wallet
@@ -326,7 +353,7 @@ export default function SetupWallet() {
               <Button
                 variant="outline"
                 className="h-24 flex flex-col items-center justify-center bg-white dark:bg-gray-600 dark:text-200 hover:bg-[#FFF5F5] border-[#FF6B6B] transition-all duration-300"
-                onClick={() => handleAddWallet("solana")}
+                onClick={() => handleAddWallet("SOL")}
               >
                 <Coins className="h-8 w-8 mb-2 text-[#FF6B6B]" />
                 Solana Wallet
@@ -459,9 +486,9 @@ export default function SetupWallet() {
 
       {/* show secret phrase */}
       <Dialog open={showSecretPhrase} onOpenChange={setShowSecretPhrase}>
-        <DialogContent className="sm:max-w-[550px] bg-white">
+        <DialogContent className="sm:max-w-[550px] bg-white dark:bg-gray-600">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-semibold text-[#1A202C]">
+            <DialogTitle className="text-2xl font-semibold text-[#1A202C] dark:text-gray-300">
               Your Secret Recovery Phrase
             </DialogTitle>
             <DialogDescription>
@@ -473,7 +500,7 @@ export default function SetupWallet() {
             {secretPhrase.split(" ").map((word, index) => (
               <div
                 key={index}
-                className="bg-[#FFF5F5] p-2 rounded-md text-center"
+                className="bg-[#FFF5F5] p-2 rounded-md text-center dark:bg-gray-700"
               >
                 {word}
               </div>
@@ -488,9 +515,9 @@ export default function SetupWallet() {
                   "success"
                 );
               }}
-              className="flex items-center"
+              className="flex items-center dark:bg-gray-500 dark:text-gray-200"
             >
-              <Copy className="mr-2 h-4 w-4" />
+              <Copy className="mr-2 h-4 w-4 " />
               Copy to Clipboard
             </Button>
             <Button
@@ -505,17 +532,21 @@ export default function SetupWallet() {
 
       {/* show address of the wallet */}
       <Dialog open={showPublicKey} onOpenChange={setShowPublicKey}>
-        <DialogContent className="sm:max-w-[425px] bg-white">
+        <DialogContent className="sm:max-w-[425px] bg-white dark:bg-gray-700">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-semibold text-[#1A202C]">
+            <DialogTitle className="text-2xl font-semibold text-[#1A202C] dark:text-gray-200">
               Your Public Key
             </DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="dark:text-gray-300">
               This is your public address for receiving funds.
             </DialogDescription>
           </DialogHeader>
           <div className="py-4">
-            <Input value={publicKey} readOnly className="font-mono text-sm" />
+            <Input
+              value={publicKey}
+              readOnly
+              className="font-mono text-sm dark:bg-gray-900 dark:text-gray-200"
+            />
           </div>
           <Button
             onClick={() => {
@@ -524,7 +555,7 @@ export default function SetupWallet() {
               );
               showNotification("Public key copied to clipboard!", "success");
             }}
-            className="flex items-center"
+            className="flex items-center dark:bg-gray-900 dark:text-gray-200"
           >
             <Copy className="mr-2 h-4 w-4" />
             Copy Public Key
@@ -537,12 +568,12 @@ export default function SetupWallet() {
         open={showMultiplePublicKey}
         onOpenChange={setShowMultiplePublicKey}
       >
-        <DialogContent className="sm:max-w-[425px] bg-white">
+        <DialogContent className="sm:max-w-[425px] bg-white dark:bg-gray-700">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-semibold text-[#1A202C]">
+            <DialogTitle className="text-2xl font-semibold text-[#1A202C] dark:text-gray-300">
               Your Public Keys
             </DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="dark:text-gray-300">
               These are your wallet addresses for receiving funds.
             </DialogDescription>
           </DialogHeader>
@@ -553,7 +584,7 @@ export default function SetupWallet() {
             <Input
               value={solAddressMultiWallet}
               readOnly
-              className="border-gray-900 font-mono text-sm"
+              className="border-gray-900 font-mono text-sm dark:bg-gray-800"
             />
             <div className="py-7 font-semibold text-xl pl-8 pb-3">
               Ethereum Address
@@ -561,16 +592,16 @@ export default function SetupWallet() {
             <Input
               value={publicKey}
               readOnly
-              className="font-mono border-gray-900 text-sm"
+              className="font-mono border-gray-900 text-sm dark:bg-gray-800"
             />
           </div>
-          <div className="grid grid-flow-col flex justify-around overflow-auto">
+          <div className="grid grid-flow-col flex justify-around overflow-auto ">
             <Button
               onClick={() => {
-                navigator.clipboard.writeText(publicKey);
+                navigator.clipboard.writeText(solAddressMultiWallet);
                 showNotification("Public key copied to clipboard!", "success");
               }}
-              className="flex items-center"
+              className="flex items-center dark:bg-gray-900 dark:text-gray-200"
             >
               <Copy className="mr-2 h-4 w-4" />
               Copy Sol Address
@@ -580,7 +611,7 @@ export default function SetupWallet() {
                 navigator.clipboard.writeText(publicKey);
                 showNotification("Public key copied to clipboard!", "success");
               }}
-              className="flex items-center"
+              className="flex items-center dark:bg-gray-900 dark:text-gray-200"
             >
               <Copy className="mr-2 h-4 w-4" />
               Copy Eth Address

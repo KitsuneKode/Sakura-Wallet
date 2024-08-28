@@ -3,7 +3,7 @@ import { ethers, HDNodeWallet } from "ethers";
 import { mnemonicToSeedSync } from "bip39";
 
 //: Function to:number generate a wallet for a specific mnemonic and index
-export function getEthWallet(mnemonic, accNum) {
+export function getEthWallet(mnemonic:string, accNum:number) {
   // Derive the wallet using the mnemonic and the index
   const walletIndex = accNum; // Change this index for different accounts
   const path = `m/44'/60'/${walletIndex}'/0/0`; // Ethereum'sdrivation path
@@ -12,7 +12,6 @@ export function getEthWallet(mnemonic, accNum) {
   const seed = mnemonicToSeedSync(mnemonic);
 
   // Create an HDNode from the seed
-
   const hdNode = HDNodeWallet.fromSeed(seed);
 
   // Derive the wallet at the specified path
