@@ -3,6 +3,17 @@
 
 ![Sakura Wallet Banner](public/homePage.png?height=300&width=800)
 
+Welcome to Sakura Wallet, where your crypto dreams blossom into reality! This isn't just another cryptocurrency wallet; it's a full-blown financial ecosystem with a Japanese twist. So, grab your virtual chopsticks, and let's dive into the world of digital yen and beyond!
+Got it! Here’s a more self-deprecating and sarcastic thank-you note:
+
+## 🌸 Sakura Wallet Live! 🌸
+
+Experience the magic of Sakura Wallet in real-time! Visit our live demo and see how our digital garden is blooming:
+
+[**🌟 Visit Sakura Wallet ライブ! 🌟**](http://your-live-link.com)
+
+そして、デジタルガーデンでお待ちしております！ 🌸✨
+
 ## 🎥 Video Demo
 
 Curious to see Sakura Wallet in action? Check out our video demo below:
@@ -16,7 +27,6 @@ So sit back, relax, and enjoy the demo!
 
 > "In the world of crypto, be like the sakura: resilient, beautiful, and always ready to bloom." - Satoshi Sakamoto (probably)
 
-Welcome to Sakura Wallet, where your crypto dreams blossom into reality! This isn't just another cryptocurrency wallet; it's a full-blown financial ecosystem with a Japanese twist. So, grab your virtual chopsticks, and let's dive into the world of digital yen and beyond!
 
 ## 🍱 Features (Our Special Bento Box)
 
@@ -168,4 +178,14 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 Remember, in the world of Sakura Wallet, every transaction is a cherry blossom, and every block is a stepping stone in your zen garden of wealth. Happy trading, and may your portfolio always be in bloom! 🌸💰
 
+
+
+
 > "In the cherry blossom's shade, there's no such thing as a stranger." - Kobayashi Issa (but we still use KYC)
+
+---
+## 🙏 Thank You for Watching! 🙏
+
+Wow, you actually made it to the end? I’m genuinely shocked—most people don't get past the first few lines! If you’re reading this, a huge thanks for sticking around. You’re like a rare cherry blossom in a field of dandelions.
+
+最後までご覧いただき、ありがとうございました！ 🌟💖 あなたは本当に驚くべきサクラの花です！ 
