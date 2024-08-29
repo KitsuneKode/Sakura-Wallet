@@ -35,7 +35,7 @@ export default function LandingPage(): JSX.Element {
   const [animatedKanji, setAnimatedKanji] = useState("暗号");
   const [darkMode, setDarkMode] = useState(false);
   const kanjis = ["暗号", "安全", "速い", "信頼"];
-  const meanings = ["Crypto", "Safety", "Fast", "Trust"];
+  // const meanings = ["Crypto", "Safety", "Fast", "Trust"];
 
   const [currency, setCurrency] = useState("JPY");
 

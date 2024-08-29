@@ -46,7 +46,7 @@ export default function SetupWallet() {
   const [accountNumberSol, setAccountNumberSol] = useState(0);
   const [accountNumberEth, setAccountNumberEth] = useState(0);
   const [currentWalletDetails, setCurrentWalletDetails] = useState<
-    Wallet | MultiWallet | {}
+    Wallet | MultiWallet | object
   >({});
   const [secretPhrase, setSecretPhrase] = useState("");
   const [showSecretPhrase, setShowSecretPhrase] = useState(false);
@@ -131,7 +131,7 @@ export default function SetupWallet() {
       alert("Invalid wallet type");
       return;
     }
-    let newWallet: Wallet | {} = {};
+    let newWallet: Wallet | object = {};
 
     if (type === "SOL") {
       const newAccountNumberSol = accountNumberSol + 1;

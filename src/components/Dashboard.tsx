@@ -40,6 +40,8 @@ export default function Component() {
 
   const [darkMode, setDarkMode] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+
+  //@ts-expect-error    //ts-ignore
   const [secretPhrase, setSecretPhrase] = useState("");
   const [accountSelectorOpen, setAccountSelectorOpen] = useState(false);
   const [selectedAccount, setSelectedAccount] = useState("Main Account");
@@ -53,6 +55,8 @@ export default function Component() {
   const [showCompletedNotification, setShowCompletedNotification] =
     useState(false);
   const [showKeysModal, setShowKeysModal] = useState(false);
+  // oncopy functionfor notification general component
+  //@ts-ignore
   const [copiedPrivateKey, setCopiedPrivateKey] = useState(false);
   const [publicKey, setPublicKey] = useState("");
   const [privateKey, setPrivateKey] = useState("");
@@ -248,7 +252,7 @@ export default function Component() {
       alert(errorMessage);
     }
   };
-
+  //@ts-expect-error    //ts-ignore
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const addNotification = (
     type: "success" | "error" | "info",
@@ -309,7 +313,7 @@ export default function Component() {
         .then(() => {
           addNotification("success", "Address shared successfully!");
         })
-        .catch((error: Error) => {
+        .catch(() => {
           addNotification("error", "Failed to share address");
         });
     } else {
