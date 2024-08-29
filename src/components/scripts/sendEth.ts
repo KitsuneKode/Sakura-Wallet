@@ -45,6 +45,3 @@ export const sendEth = async (net: string, from: string, to: string, amount: num
 }
 
 
-// (async () => ethBalance())();
-
-// sendEth("Sepholia", "0xac3331c86ac2a14791d010cec30f7cf5bb2472f84b66e8c1057bb00c1bc22bf3" , "0xcb7f1973A70d1E396380DD73eb41D4b3BFEb62b0", 0.0005);
