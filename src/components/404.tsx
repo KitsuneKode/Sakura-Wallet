@@ -21,7 +21,7 @@ export default function NotFound() {
 
       <div className="w-76 h-76 mb-8">
         <img
-          src="https://github.com/user-attachments/assets/a9634270-60e5-45a4-911f-898b9dbffbad"
+          src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExa2kzZHh1cDZrd3IzejMwbWplYjUwYmJqejM3MW51aTVkejBmanF0biZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/K6VYjyn4DI2Slo0zJi/giphy.gif"
           alt="Crying Pikachu"
           className="w-full h-full object-contain rounded-lg shadow-lg"
         />
