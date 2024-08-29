@@ -1,11 +1,20 @@
-// @ts-nocheck
-
 import { motion, AnimatePresence } from "framer-motion";
 import { Cherry, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SendSol } from "./scripts/sendSol.ts";
 import { useToast } from "./ui/use-toast.ts";
 import { sendEth } from "./scripts/sendEth.ts";
+
+type SendCryptoProps = {
+  privateKey: string;
+  selectedCurrency: string;
+  isSubmitting: boolean;
+  setSendModalOpen: (value: boolean) => void;
+  publicKey: string;
+  setIsSubmitting: (value: boolean) => void;
+  setShowCompletedNotification: (value: boolean) => void;
+};
+
 const SendCrypto = ({
   privateKey,
   selectedCurrency,
@@ -14,9 +23,12 @@ const SendCrypto = ({
   publicKey,
   setIsSubmitting,
   setShowCompletedNotification,
-}) => {
+}: SendCryptoProps) => {
   const [recipient, setRecipient] = useState("");
-  const [transactionSignature, setTransactionSignature] = useState("");
+
+  const [transactionSignature, setTransactionSignature] = useState<
+    string | null
+  >(null);
   const [amount, setAmount] = useState(0);
   const { toast } = useToast();
 
@@ -24,58 +36,53 @@ const SendCrypto = ({
     e.preventDefault();
     setIsSubmitting(true);
 
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setSendModalOpen(false);
-    }, 2500);
-
-    setShowCompletedNotification(true);
-
     try {
+      let signature;
       if (selectedCurrency === "ETH") {
-        const signature = await sendEth(
-          "Sepholia",
-          privateKey,
-          recipient,
-          amount
-        );
-        setTransactionSignature(signature);
-        console.log(transactionSignature);
+        signature = await sendEth("Sepholia", privateKey, recipient, amount);
+        setTransactionSignature(`${signature?.blockNumber}`);
       } else if (selectedCurrency === "SOL") {
-        const signature = await SendSol(
-          "DevNet",
-          privateKey,
-          recipient,
-          amount
-        );
+        signature = await SendSol("DevNet", privateKey, recipient, amount);
         setTransactionSignature(signature);
-        console.log(transactionSignature);
       }
+      console.log("Transaction Signature:", signature);
       setShowCompletedNotification(true);
-      toast({
-        variant: "default",
-        title: "Transaction sent successfully",
-        description: `Transaction signature: ${signature}`,
-      });
-    } catch (e) {
+    } catch (e: any) {
+      let errorMessage = "An unknown error occurred";
+
+      if (e?.info?.error?.message) {
+        errorMessage = e.info.error.message;
+      } else if (e?.message) {
+        errorMessage = e.message;
+      }
+
       toast({
         variant: "destructive",
         title: "Uh oh! Something went wrong.",
-        description: "There was a problem with your request.",
+        description: errorMessage,
       });
-      console.error("Unable to send transaction", e);
-    }
 
-    setTimeout(() => {
-      setShowCompletedNotification(false);
-    }, 6000);
+      console.error("Unable to send transaction:", errorMessage);
+    } finally {
+      setIsSubmitting(false);
+      setSendModalOpen(false);
+    }
   };
+
+  useEffect(() => {
+    console.log(transactionSignature);
+    if (transactionSignature) {
+      console.log("Transaction Signature:", transactionSignature);
+      setShowCompletedNotification(true);
+      setTimeout(() => {
+        setShowCompletedNotification(false);
+      }, 6000);
+    }
+  }, [transactionSignature]);
+
   return (
     <>
       <AnimatePresence>
-        {/* {sendModalOpen && (
-           
-          )} */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

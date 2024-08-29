@@ -3,6 +3,17 @@
 
 ![Sakura Wallet Banner](public/homePage.png?height=300&width=800)
 
+## 🎥 Video Demo
+
+Curious to see Sakura Wallet in action? Check out our video demo below:
+
+[![Sakura Wallet Demo](public/pikachu.png)](https://github.com/user-attachments/assets/92425fe2-183c-4f1e-8bab-fdd6b3173050)
+
+In this video, we showcase the key features and functionalities of Sakura Wallet, giving you a glimpse into the world of crypto with a Japanese twist. From the beautiful user interface to the seamless transactions, you'll get a taste of what Sakura Wallet has to offer.
+
+So sit back, relax, and enjoy the demo!
+
+
 > "In the world of crypto, be like the sakura: resilient, beautiful, and always ready to bloom." - Satoshi Sakamoto (probably)
 
 Welcome to Sakura Wallet, where your crypto dreams blossom into reality! This isn't just another cryptocurrency wallet; it's a full-blown financial ecosystem with a Japanese twist. So, grab your virtual chopsticks, and let's dive into the world of digital yen and beyond!

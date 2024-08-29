@@ -1,9 +1,8 @@
-//@ts-nocheck
 import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { motion } from "framer-motion";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "./ui/tabs";
 import {
   Card,
   CardContent,
@@ -17,7 +16,6 @@ import {
   Gift,
   CreditCard,
   Sparkles,
-  Flower,
   Clock,
   Cherry,
   Lock,
@@ -76,7 +74,7 @@ export default function LandingPage(): JSX.Element {
     <div className={`min-h-screen ${darkMode ? "dark" : ""}`}>
       <div className="bg-gradient-to-b from-red-50 to-white dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-white transition-colors duration-300 relative overflow-hidden">
         <BackgroundKanji />
-        <header className=" container mx-auto px-4 py-6 flex justify-between items-center relative z-10 sticky top-0 bg-red-50 dark:bg-gray-900 bg-opacity-90 dark:bg-opacity-90 backdrop-blur-sm">
+        <header className=" container mx-auto px-4 py-6 flex justify-between items-center z-10 sticky top-0 bg-red-50 dark:bg-gray-900 bg-opacity-90 dark:bg-opacity-90 backdrop-blur-sm">
           <div className="flex items-center space-x-2">
             <Cherry className="h-8 w-8 text-red-500" />
             <span className="text-2xl font-bold">桜ウォレット</span>
@@ -358,7 +356,7 @@ export default function LandingPage(): JSX.Element {
             </nav>
             <div className="flex space-x-4">
               <a
-                href="https://github.com/kitsunekode"
+                href="https://github.com/KitsuneKode/Sakura-Wallet"
                 className="text-white hover:text-red-500 transition-colors"
                 target="_blank"
               >
@@ -386,6 +384,15 @@ export default function LandingPage(): JSX.Element {
   );
 }
 
+type PricingCardProps = {
+  title: string;
+  description: string;
+  price: string;
+  features: string[];
+  highlighted?: boolean;
+  icon: JSX.Element;
+};
+
 function PricingCard({
   title,
   description,
@@ -393,7 +400,7 @@ function PricingCard({
   features,
   highlighted = false,
   icon,
-}) {
+}: PricingCardProps) {
   const navigate = useNavigate();
 
   return (
@@ -442,7 +449,7 @@ function PricingCard({
   );
 }
 
-function SecurityFeature({ text }) {
+function SecurityFeature({ text }: { text: string }) {
   return (
     <li className="flex items-center space-x-2">
       <Clock className="w-5 h-5 text-[#FF6B6B]" />
@@ -451,7 +458,7 @@ function SecurityFeature({ text }) {
   );
 }
 
-function SupportCard({ currency }) {
+function SupportCard({ currency }: { currency: string }) {
   return (
     <Card className="bg-white border-2 border-[#E2E8F0] overflow-hidden">
       <div className="p-4 bg-[#FFF5F5]">
@@ -497,13 +504,13 @@ function SupportCard({ currency }) {
   );
 }
 
-function getPriceInCurrency(priceInJPY, currency) {
-  const exchangeRates = {
+function getPriceInCurrency(priceInJPY: number, currency: string) {
+  const exchangeRates: { [key: string]: number } = {
     JPY: 1,
     USD: 0.0067,
     INR: 0.56,
   };
-  const symbols = {
+  const symbols: { [key: string]: string } = {
     JPY: "¥",
     USD: "$",
     INR: "₹",

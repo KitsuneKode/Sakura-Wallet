@@ -1,9 +1,35 @@
-// @ts-nocheck
-
 import { ArrowDownLeft, ArrowUpRight } from "lucide-react";
 import { motion } from "framer-motion";
 
-export function DashboardCard({ title, value, icon }) {
+type DashboardCardProps = {
+  title: string;
+  value: string;
+  icon: React.ReactNode;
+};
+
+type CryptoRowProps = {
+  name: string;
+  type: string;
+  iconPath: string;
+  balance: number | string;
+  value: string;
+  onClick: () => void;
+};
+
+type TransactionProps = {
+  type: string;
+  amount: string;
+  recipient: string;
+  sender: string;
+};
+
+type QuickActionButtonProps = {
+  label: string;
+  icon: React.ReactNode;
+  onClick: () => void;
+};
+
+export function DashboardCard({ title, value, icon }: DashboardCardProps) {
   return (
     <motion.div
       className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 flex items-center"
@@ -21,7 +47,14 @@ export function DashboardCard({ title, value, icon }) {
   );
 }
 
-export function CryptoRow({ name, type, iconPath, balance, value, onClick }) {
+export function CryptoRow({
+  name,
+  type,
+  iconPath,
+  balance,
+  value,
+  onClick,
+}: CryptoRowProps) {
   return (
     <motion.tr
       className="border-b dark:border-gray-700 cursor-pointer"
@@ -46,7 +79,12 @@ export function CryptoRow({ name, type, iconPath, balance, value, onClick }) {
   );
 }
 
-export function Transaction({ type, amount, recipient, sender }) {
+export function Transaction({
+  type,
+  amount,
+  recipient,
+  sender,
+}: TransactionProps) {
   const isReceived = type === "received";
   return (
     <motion.div
@@ -83,7 +121,11 @@ export function Transaction({ type, amount, recipient, sender }) {
   );
 }
 
-export function QuickActionButton({ label, icon, onClick }) {
+export function QuickActionButton({
+  label,
+  icon,
+  onClick,
+}: QuickActionButtonProps) {
   return (
     <motion.button
       className="bg-white  dark:bg-gray-800 rounded-lg shadow-md p-4 flex flex-col items-center justify-center hover:bg-red-200 dark:hover:bg-gray-700 transition-colors duration-300"

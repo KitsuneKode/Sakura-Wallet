@@ -1,8 +1,15 @@
-// @ts-nocheck
-
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { X, Copy, Check, Eye, EyeOff } from "lucide-react";
+
+type ShowKeysProps = {
+  classname: string;
+  setShowKeysModal: (value: boolean) => void;
+  copyPublicKey: () => void;
+  privateKey: string;
+  publicKey: string;
+  copyPrivateKey: () => void;
+};
 
 const ShowKeys = ({
   classname,
@@ -11,7 +18,7 @@ const ShowKeys = ({
   privateKey,
   publicKey,
   copyPrivateKey,
-}) => {
+}: ShowKeysProps) => {
   const [showPrivateKey, setShowPrivateKey] = useState(false);
   const [copiedPrivateKey, setCopiedPrivateKey] = useState(false);
   const [copiedPublicKey, setCopiedPublicKey] = useState(false);

@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import LoadingAnimation from "./components/LoadingAnimation";
 import LandingPage from "./components/Landing";
 import Component from "./components/Dashboard";
@@ -13,17 +13,12 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const loadingDuration = 4000; // 4 seconds
 
-  useEffect(() => {
-    // Any initial setup that needs to happen can go here
-  }, []);
-
   if (isLoading) {
     return (
       <LoadingAnimation
         duration={loadingDuration}
         onLoadingComplete={() => {
           if (document.readyState === "complete") {
-            //   setIsLoading(true);
             setIsLoading(false);
           } else {
             window.location.reload();

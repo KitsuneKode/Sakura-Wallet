@@ -9,9 +9,13 @@ export const airdrop = async (address: string, amount: number) => {
     const latestBlockhash = await conn.getLatestBlockhash()
 
 
-    await conn.confirmTransaction({
+     await conn.confirmTransaction({
         blockhash:latestBlockhash.blockhash,
         lastValidBlockHeight:latestBlockhash.lastValidBlockHeight,
         signature:signature,});
-} 
+    
+
+        
+
+    } 
 

@@ -1,6 +1,4 @@
-// @ts-nocheck
-
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "./ui/button";
 import {
   Card,
@@ -48,7 +46,7 @@ export default function SetupWallet() {
   const [accountNumberSol, setAccountNumberSol] = useState(0);
   const [accountNumberEth, setAccountNumberEth] = useState(0);
   const [currentWalletDetails, setCurrentWalletDetails] = useState<
-    Wallet | MultiWallet
+    Wallet | MultiWallet | {}
   >({});
   const [secretPhrase, setSecretPhrase] = useState("");
   const [showSecretPhrase, setShowSecretPhrase] = useState(false);
@@ -61,7 +59,12 @@ export default function SetupWallet() {
   const [showImport, setShowImport] = useState(false);
   const [showWallets, setShowWallets] = useState(false);
   const [showAllWallets, setShowAllWallets] = useState(false);
-  const [notification, setNotification] = useState(null);
+  type Notification = {
+    message: string;
+    type: "error" | "success";
+  };
+
+  const [notification, setNotification] = useState<Notification | null>(null);
   const [showPublicKey, setShowPublicKey] = useState(false);
   const [showProceed, setShowProceed] = useState(false);
   const [showKeysModal, setShowKeysModal] = useState(false);
@@ -109,14 +112,14 @@ export default function SetupWallet() {
   };
 
   //needs fixing
-
+  //ts-ignore
   const handleImportSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsProcessing(true);
     setTimeout(() => {
       setIsProcessing(false);
       setShowImport(false);
-      addWallet("import", publicKey);
+      addWallet("import");
       showNotification("Wallet imported successfully!", "success");
       setShowProceed(true);
     }, 2000);
@@ -128,7 +131,7 @@ export default function SetupWallet() {
       alert("Invalid wallet type");
       return;
     }
-    let newWallet: Wallet;
+    let newWallet: Wallet | {} = {};
 
     if (type === "SOL") {
       const newAccountNumberSol = accountNumberSol + 1;
@@ -168,7 +171,7 @@ export default function SetupWallet() {
 
     setCurrentWalletDetails(newWallet);
 
-    const updatedWallets = [...wallets, newWallet];
+    const updatedWallets: Wallet[] = [...wallets, newWallet as Wallet];
     setWallets(updatedWallets);
   };
 
@@ -228,6 +231,7 @@ export default function SetupWallet() {
   };
 
   //show notification
+  //
   const showNotification = (message: string, type: "error" | "success") => {
     setNotification({ message, type });
   };
@@ -401,8 +405,8 @@ export default function SetupWallet() {
                   setShowKeysModal={setShowKeysModal}
                   privateKey={privateKey}
                   publicKey={publicKey}
-                  copyPrivateKey={onCopy}
-                  copyPublicKey={onCopy}
+                  copyPrivateKey={() => onCopy(privateKey)}
+                  copyPublicKey={() => onCopy(publicKey)}
                 />
               )}
 
@@ -478,8 +482,8 @@ export default function SetupWallet() {
                 setShowKeysModal={setShowKeysModalAllKeys}
                 privateKey={privateKey}
                 publicKey={publicKey}
-                copyPrivateKey={onCopy}
-                copyPublicKey={onCopy}
+                copyPrivateKey={() => onCopy(privateKey)}
+                copyPublicKey={() => onCopy(publicKey)}
               />
             )}
           </div>
@@ -597,7 +601,7 @@ export default function SetupWallet() {
               className="font-mono border-gray-900 text-sm dark:bg-gray-800"
             />
           </div>
-          <div className="grid grid-flow-col flex justify-around overflow-auto ">
+          <div className="grid grid-flow-col justify-around overflow-auto ">
             <Button
               onClick={() => {
                 navigator.clipboard.writeText(solAddressMultiWallet);

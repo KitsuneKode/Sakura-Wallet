@@ -1,5 +1,3 @@
-//@ts-nocheck
-
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -16,6 +14,7 @@ import {
   Copy,
   Check,
   X,
+  AlertCircle,
   CloudDrizzle,
 } from "lucide-react";
 import ReceiveCrypto from "./RecieveCrypto";
@@ -58,6 +57,7 @@ export default function Component() {
   const [publicKey, setPublicKey] = useState("");
   const [privateKey, setPrivateKey] = useState("");
   const [airdropAmount, setAirdropAmount] = useState(1);
+  const [buttonDisabled, setButtonDisabled] = useState(false);
 
   const [nickname, setNickname] = useState("");
 
@@ -65,12 +65,25 @@ export default function Component() {
   const [sol, setSol] = useState<number | null>(null);
   const [eth, setEth] = useState<number | null>(null);
   const [multipleWallets, setMultipleWallets] = useState(false);
-  const [multiWalletKeys, setMultiWalletKeys] = useState({});
+  const [multiWalletKeys, setMultiWalletKeys] = useState<MultiWalletKwys | {}>(
+    {}
+  );
 
   const toggleDarkMode = () => setDarkMode(!darkMode);
   const toggleSettings = () => setSettingsOpen(!settingsOpen);
   const toggleAccountSelector = () =>
     setAccountSelectorOpen(!accountSelectorOpen);
+
+  type MultiWalletKwys = {
+    solana: {
+      publicKey: string;
+      privateKey: string;
+    };
+    ethereum: {
+      publicKey: string;
+      privateKey: string;
+    };
+  };
 
   useEffect(() => {
     // If user directly tries to access the dashboard without giving accounts and stuff
@@ -121,7 +134,7 @@ export default function Component() {
         walletDetails = currentWalletDetails.ethereum as WalletDetails;
         setMultipleWallets(true);
         multipleWalletDetails = currentWalletDetails as MultipleWalletDetails;
-        setMultiWalletKeys({
+        const newMultiWalletKeys: MultiWalletKwys = {
           solana: {
             publicKey: currentWalletDetails.solana.publicKey,
             privateKey: currentWalletDetails.solana.privateKey,
@@ -130,7 +143,8 @@ export default function Component() {
             publicKey: currentWalletDetails.ethereum.publicKey,
             privateKey: currentWalletDetails.ethereum.privateKey,
           },
-        });
+        };
+        setMultiWalletKeys(newMultiWalletKeys);
       } else {
         alert("no wallet details found");
       }
@@ -214,10 +228,24 @@ export default function Component() {
   const handleAirdropRequest = async () => {
     try {
       const response = await airdrop(publicKey, airdropAmount);
-      console.log(response);
-    } catch (e) {
-      alert(e.message);
-      console.error(e.response.data.error.message);
+      console.log(response, "response is this");
+    } catch (e: unknown) {
+      let errorMessage = "Unknown error";
+
+      if (e instanceof Error) {
+        try {
+          // Try to parse e.message assuming it contains the JSON string
+          const jsonString = e.message.substring(e.message.indexOf("{"));
+          const errorObj = JSON.parse(jsonString);
+          errorMessage =
+            (errorObj.error?.message || e.message) +
+            "before fallback original message";
+        } catch {
+          errorMessage = e.message; // Fallback to the original message if parsing fails
+        }
+      }
+
+      alert(errorMessage);
     }
   };
 
@@ -249,15 +277,19 @@ export default function Component() {
     setTimeout(() => setCopiedPrivateKey(false), 2000);
   };
 
-  const handleSendSubmit = (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setSendModalOpen(false);
-      addNotification("success", "Transaction completed successfully!");
-    }, 3000);
-  };
+  //fix the transaction
+
+  //ts-ignore
+
+  // const handleSendSubmit = (e) => {
+  //   e.preventDefault();
+  //   setIsSubmitting(true);
+  //   setTimeout(() => {
+  //     setIsSubmitting(false);
+  //     setSendModalOpen(false);
+  //     addNotification("success", "Transaction completed successfully!");
+  //   }, 3000);
+  // };
 
   const alertMessage = (message?: string) => {
     const alertMessage = !message
@@ -290,9 +322,14 @@ export default function Component() {
         <header className="bg-white dark:bg-gray-800 shadow-md sticky top-0 z-10">
           <div className="container mx-auto px-4 py-4 flex justify-between items-center">
             <div className="flex items-center space-x-2">
-              <Cherry className="h-8 w-8 text-red-500" />
+              <Cherry
+                className="h-8 w-8 text-red-500 hover:text-red-700 cursor-pointer"
+                onClick={() => {
+                  navigate("/");
+                }}
+              />
               <span className="text-2xl font-bold">桜ウォレット</span>
-              <button className=" bg-red-200 dark:bg-red-700 text-xs font-bold mt-3 px-2 rounded-xl text-red-600 dark:text-red-200 transition-colors">
+              <button className=" bg-red-200 dark:bg-red-700 text-xs font-bold mt-3 px-2 rounded-xl text-red-600 dark:text-red-200 transition-colors hover:cursor-auto">
                 BETA
               </button>
             </div>
@@ -424,12 +461,12 @@ export default function Component() {
             </div>
           </div>
           {/* Airdrop */}
-          {selectedNetwork === "devnet" && (
+          {selectedNetwork === "devnet" && selectedCurrency === "SOL" && (
             <div className="mb-8 flex items-center space-x-4">
               <span className="text-sm font-medium">Airdrop</span>
               <select
                 value={airdropAmount}
-                onChange={(e) => setAirdropAmount(e.target.value)}
+                onChange={(e) => setAirdropAmount(parseFloat(e.target.value))}
                 className="text-sm bg-gray-100 dark:bg-gray-800 rounded px-2 py-1"
               >
                 <option value="0.5">0.5 SOL</option>
@@ -438,8 +475,14 @@ export default function Component() {
                 <option value="2.5">2.5 SOL</option>
               </select>
               <button
-                onClick={handleAirdropRequest}
-                className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition-colors duration-300 flex items-center"
+                onClick={() => {
+                  handleAirdropRequest();
+                  setButtonDisabled(true);
+                }}
+                className={`bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition-colors duration-300 flex items-center ${
+                  buttonDisabled ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+                disabled={buttonDisabled}
               >
                 <CloudDrizzle className="h-5 w-5 mr-2" />
                 Request Airdrop
@@ -497,8 +540,14 @@ export default function Component() {
                       onClick={() => {
                         setSelectedCurrency("ETH");
                         if (multipleWallets) {
-                          setPrivateKey(multiWalletKeys.ethereum.privateKey);
-                          setPublicKey(multiWalletKeys.ethereum.publicKey);
+                          setPrivateKey(
+                            (multiWalletKeys as MultiWalletKwys).ethereum
+                              .privateKey
+                          );
+                          setPublicKey(
+                            (multiWalletKeys as MultiWalletKwys).ethereum
+                              .publicKey
+                          );
                         }
                       }}
                     />
@@ -511,8 +560,14 @@ export default function Component() {
                       onClick={() => {
                         setSelectedCurrency("SOL");
                         if (multipleWallets) {
-                          setPrivateKey(multiWalletKeys.solana.privateKey);
-                          setPublicKey(multiWalletKeys.solana.publicKey);
+                          setPrivateKey(
+                            (multiWalletKeys as MultiWalletKwys).solana
+                              .privateKey
+                          );
+                          setPublicKey(
+                            (multiWalletKeys as MultiWalletKwys).solana
+                              .publicKey
+                          );
                         }
                       }}
                     />
@@ -538,16 +593,19 @@ export default function Component() {
                   type="sent"
                   amount="0.1 BTC"
                   recipient="0x1234...5678"
+                  sender="0xabcd...efgh"
                 />
                 <Transaction
                   type="received"
                   amount="100 XRP"
+                  recipient="0x1234...5678"
                   sender="0xabcd...efgh"
                 />
                 <Transaction
                   type="sent"
                   amount="1.5 ETH"
                   recipient="0x9876...5432"
+                  sender="0x1234...5678"
                 />
               </div>
             </div>
@@ -742,6 +800,12 @@ export default function Component() {
       </div>
     </div>
   );
+}
+
+interface Notification {
+  id: number;
+  type: "success" | "error" | "info";
+  message: string;
 }
 function Notification({ id, type, message }: Notification) {
   const icons = {
