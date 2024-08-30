@@ -123,9 +123,9 @@ As we stroll through this digital garden, here's what's blossoming:
 
 11. **The Shogunate's Security**: Fortifying our app's security with password and login authentication, local storage of important credentials, and the persistence of states over login sessions. Your data will be guarded like a treasured scroll in a samurai’s vault, ensuring seamless continuity every time you enter the app.
 
-Let me know if there's anything else you'd like to add!
-
 12. **Gas Fee Guesstimator 3000**: We're fine-tuning our gas fee estimation algorithm. Soon it'll be so accurate, you'll think it's using a crystal ball (spoiler: it's just really good math).
+
+Let me know if there's anything else you'd like to add!
 
 Stay tuned as we continue to nurture our digital garden. Remember, in the world of Sakura Wallet, every bug fixed is a petal added to our ever-blooming cherry blossom of progress! 🌸
 
@@ -172,4 +172,4 @@ Remember, in the world of Sakura Wallet, every transaction is a cherry blossom, 
 
 Wow, you actually made it to the end? I’m genuinely shocked—most people don't get past the first few lines! If you’re reading this, a huge thanks for sticking around. You’re like a rare cherry blossom in a field of dandelions.
 
-最後までご覧いただき、ありがとうございました！ 🌟💖 あなたは本当に驚くべきサクラの花です！ 
+最後までご覧いただき、ありがとうございました！ 🌟💖 あなたは本当に驚くべきサクラの花です！
