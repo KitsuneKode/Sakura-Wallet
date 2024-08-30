@@ -56,7 +56,7 @@ export default function Component() {
     useState(false);
   const [showKeysModal, setShowKeysModal] = useState(false);
   // oncopy functionfor notification general component
-  //@ts-ignore
+  //@ts-expect-error //ts-ignore
   const [copiedPrivateKey, setCopiedPrivateKey] = useState(false);
   const [publicKey, setPublicKey] = useState("");
   const [privateKey, setPrivateKey] = useState("");
@@ -69,9 +69,9 @@ export default function Component() {
   const [sol, setSol] = useState<number | null>(null);
   const [eth, setEth] = useState<number | null>(null);
   const [multipleWallets, setMultipleWallets] = useState(false);
-  const [multiWalletKeys, setMultiWalletKeys] = useState<MultiWalletKwys | {}>(
-    {}
-  );
+  const [multiWalletKeys, setMultiWalletKeys] = useState<
+    MultiWalletKwys | object
+  >({});
 
   const toggleDarkMode = () => setDarkMode(!darkMode);
   const toggleSettings = () => setSettingsOpen(!settingsOpen);
@@ -511,9 +511,36 @@ export default function Component() {
               icon={<Settings className="h-6 w-6" />}
             />
           </div>
+          {/* When Currency is selected this shows the details of the Current chain  */}
+          {selectedCurrency && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              className="mt-8 bg-red-100 hover: dark:bg-gray-800 rounded-lg shadow-md p-6"
+            >
+              <h2 className="text-2xl font-semibold mb-4">
+                {selectedCurrency} ウォレット残高 (Wallet Balance)
+              </h2>
+              <p className="text-lg font-medium">
+                {selectedCurrency === "ETH" ? eth : sol} {selectedCurrency}
+              </p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                ¥
+                {selectedCurrency === "ETH"
+                  ? eth
+                    ? eth * 356238.3
+                    : 0
+                  : sol
+                  ? sol * 21041
+                  : 0}
+              </p>
+            </motion.div>
+          )}
+
           {/*  Holding balance section */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-2 mt-6">
               <h2 className="text-2xl font-semibold mb-4">
                 保有資産 (Holdings)
               </h2>
@@ -588,7 +615,7 @@ export default function Component() {
               </div>
             </div>
 
-            <div>
+            <div className="mt-7">
               <h2 className="text-2xl font-semibold mb-4">
                 最近の取引 (Recent Transactions)
               </h2>
@@ -614,33 +641,6 @@ export default function Component() {
               </div>
             </div>
           </div>
-
-          {/* When Currency is selected this shows the details of the Current chain  */}
-          {selectedCurrency && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 20 }}
-              className="mt-8 bg-red-100 hover: dark:bg-gray-800 rounded-lg shadow-md p-6"
-            >
-              <h2 className="text-2xl font-semibold mb-4">
-                {selectedCurrency} ウォレット残高 (Wallet Balance)
-              </h2>
-              <p className="text-lg font-medium">
-                {selectedCurrency === "ETH" ? eth : sol} {selectedCurrency}
-              </p>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                ¥
-                {selectedCurrency === "ETH"
-                  ? eth
-                    ? eth * 356238.3
-                    : 0
-                  : sol
-                  ? sol * 21041
-                  : 0}
-              </p>
-            </motion.div>
-          )}
 
           {/* Quick ACtion, Send, Recieve */}
 

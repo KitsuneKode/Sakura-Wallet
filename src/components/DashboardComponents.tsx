@@ -57,24 +57,41 @@ export function CryptoRow({
 }: CryptoRowProps) {
   return (
     <motion.tr
-      className="border-b dark:border-gray-700 cursor-pointer"
+      className="border-b dark:border-gray-700 cursor-pointer group"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
+      whileHover={{
+        backgroundColor: "rgba(255, 99, 71, 0.1)",
+        transition: { duration: 0.2 },
+      }}
+      whileTap={{ scale: 0.98 }}
       onClick={onClick}
     >
       <td className="py-2">
         <div className="flex items-center">
-          <div className="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded-full mr-2 overflow-hidden">
-            <img src={iconPath} alt="" />
-          </div>
-          <span>
+          <motion.div
+            className="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded-full mr-2 overflow-hidden"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+          >
+            <img
+              src={iconPath}
+              alt={`${name} icon`}
+              className="w-full h-full object-cover"
+            />
+          </motion.div>
+          <span className="group-hover:text-red-500 transition-colors duration-200">
             {type} ({name})
           </span>
         </div>
       </td>
-      <td className="text-right py-2">{balance}</td>
-      <td className="text-right py-2">{value}</td>
+      <td className="text-right py-2 group-hover:text-red-500 transition-colors duration-200">
+        {balance}
+      </td>
+      <td className="text-right py-2 group-hover:text-red-500 transition-colors duration-200">
+        {value}
+      </td>
     </motion.tr>
   );
 }
