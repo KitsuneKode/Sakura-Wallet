@@ -10,7 +10,7 @@ Got it! Here’s a more self-deprecating and sarcastic thank-you note:
 
 Experience the magic of Sakura Wallet in real-time! Visit our live demo and see how our digital garden is blooming:
 
-[**🌟 Visit Sakura Wallet ライブ! 🌟**](http://your-live-link.com)
+[**🌟 Visit Sakura Wallet ライブ! 🌟**](https://sakura-wallet.vercel.app/)
 
 そして、デジタルガーデンでお待ちしております！ 🌸✨
 
@@ -24,9 +24,7 @@ In this video, we showcase the key features and functionalities of Sakura Wallet
 
 So sit back, relax, and enjoy the demo!
 
-
 > "In the world of crypto, be like the sakura: resilient, beautiful, and always ready to bloom." - Satoshi Sakamoto (probably)
-
 
 ## 🍱 Features (Our Special Bento Box)
 
@@ -62,8 +60,6 @@ So sit back, relax, and enjoy the demo!
 - [Web3.js](https://web3js.readthedocs.io/) - Ethereum JavaScript API
 - [Solana Web3.js](https://solana-labs.github.io/solana-web3.js/) - Solana JavaScript API
 
-
-
 ## 🌱 Roadmap (Our Growth Plan)
 
 ![Sakura Wallet Roadmap](/public/Roadmap.jpg?height=400&width=800)
@@ -87,7 +83,6 @@ As we stroll through this digital garden, here's what's blossoming:
 
 ### 🐛 Major Bugs (Pesky Caterpillars in Our Garden)
 
-
 1. **The Wayward Wallet Import**: Our import wallet feature has lost its way, like a ronin without a master. The private key validation is undergoing rigorous training to restore honor and discipline to the process.
 
 2. **The Stubborn Select Tags**: The select tags in the send modal have become as immovable as ancient stone lanterns, refusing to bend to the user's will. They're hardcoded for now, but soon they'll be back to taking orders like a well-trained samurai.
@@ -100,13 +95,9 @@ As we stroll through this digital garden, here's what's blossoming:
 
 6. **The Stuck Account Switcher**: The account switcher is currently frozen like a Zen monk in deep meditation, unresponsive to change. We're helping it break free from its trance to once again follow the user's commands.
 
-
-
 7. **The Kanji Conundrum**: Sometimes, when switching from Japanese to English, the app starts speaking in haiku. While poetic, it's not very practical. We're working on teaching it proper grammar.
 
 8. **The Overeager Notification Yokai**: Our notification system sometimes gets a bit too excited and sends multiple notifications for a single event. We're currently performing an exorcism (aka debugging) to calm it down.
-
-
 
 ### 🛠️ Active Fixes (Our Busy Gardeners)
 
@@ -119,7 +110,6 @@ As we stroll through this digital garden, here's what's blossoming:
 4. **Pikachu Error Page Upgrade**: Our beloved Pikachu 404 page is getting new animations. Soon, it'll be using Thunderbolt on broken links!
 
 5. **The Multilingual Maestro Update**: Enhancing our language switching mechanism to ensure it translates with the grace of a haiku master, not a confused tourist.
-
 
 6. **The Sidebar Shogun**: A mighty sidebar is being added to our app, providing quick access to all your essentials. Like a skilled samurai, it’ll always be by your side, ready to serve.
 
@@ -135,9 +125,7 @@ As we stroll through this digital garden, here's what's blossoming:
 
 Let me know if there's anything else you'd like to add!
 
-
 12. **Gas Fee Guesstimator 3000**: We're fine-tuning our gas fee estimation algorithm. Soon it'll be so accurate, you'll think it's using a crystal ball (spoiler: it's just really good math).
-
 
 Stay tuned as we continue to nurture our digital garden. Remember, in the world of Sakura Wallet, every bug fixed is a petal added to our ever-blooming cherry blossom of progress! 🌸
 
@@ -153,8 +141,6 @@ Stay tuned as we continue to nurture our digital garden. Remember, in the world 
 ## 🤝 Contributing
 
 We welcome contributions faster than a bullet train! Please read our [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
-
-
 
 ## 📜 License
 
@@ -178,12 +164,10 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 Remember, in the world of Sakura Wallet, every transaction is a cherry blossom, and every block is a stepping stone in your zen garden of wealth. Happy trading, and may your portfolio always be in bloom! 🌸💰
 
-
-
-
 > "In the cherry blossom's shade, there's no such thing as a stranger." - Kobayashi Issa (but we still use KYC)
 
 ---
+
 ## 🙏 Thank You for Watching! 🙏
 
 Wow, you actually made it to the end? I’m genuinely shocked—most people don't get past the first few lines! If you’re reading this, a huge thanks for sticking around. You’re like a rare cherry blossom in a field of dandelions.

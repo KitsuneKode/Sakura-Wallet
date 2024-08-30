@@ -47,6 +47,7 @@ const SendCrypto = ({
       }
       console.log("Transaction Signature:", signature);
       setShowCompletedNotification(true);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       let errorMessage = "An unknown error occurred";
 

@@ -116,13 +116,15 @@ export default function SetupWallet() {
   const handleImportSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsProcessing(true);
-    setTimeout(() => {
-      setIsProcessing(false);
-      setShowImport(false);
-      addWallet("import");
-      showNotification("Wallet imported successfully!", "success");
-      setShowProceed(true);
-    }, 2000);
+
+    alert("work on progress, please wait for a while, its broken");
+    // setTimeout(() => {
+    //   setIsProcessing(false);
+    //   setShowImport(false);
+    //   addWallet("import");
+    //   showNotification("Wallet imported successfully!", "success");
+    //   setShowProceed(true);
+    // }, 2000);
   };
 
   //actual add wallet logic for single wallet
