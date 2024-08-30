@@ -517,7 +517,7 @@ export default function Component() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
-              className="mt-8 bg-red-100 hover: dark:bg-gray-800 rounded-lg shadow-md p-6"
+              className="mt-8 bg-red-100  dark:bg-red-900 rounded-lg shadow-md p-6 hover:cursor-auto "
             >
               <h2 className="text-2xl font-semibold mb-4">
                 {selectedCurrency} ウォレット残高 (Wallet Balance)
