@@ -10,7 +10,7 @@ Got it! Here’s a more self-deprecating and sarcastic thank-you note:
 
 Experience the magic of Sakura Wallet in real-time! Visit our live demo and see how our digital garden is blooming:
 
-[**🌟 Visit Sakura Wallet ライブ! 🌟**](https://sakura-wallet.vercel.app/)
+[**🌟 Visit Sakura Wallet ライブ! 🌟**](https://sakura-wallet.kitsunekode.me/)
 
 そして、デジタルガーデンでお待ちしております！ 🌸✨
 
